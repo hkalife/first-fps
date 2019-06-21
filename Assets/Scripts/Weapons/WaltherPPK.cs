@@ -5,12 +5,12 @@ using UnityEngine;
 public class WaltherPPK : MonoBehaviour
 {
 
-
+    private Animator anim;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        anim = gameObject.GetComponent<Animator>();   
     }
 
     // Update is called once per frame
@@ -19,12 +19,37 @@ public class WaltherPPK : MonoBehaviour
         Shoot();
         Aim();
         Reload();
+        Move();
+    }
+
+    void Move ()
+    {
+        if (Input.GetKeyDown(KeyCode.W)) //walk
+        {
+            anim.Play("walther walk");
+            anim.SetBool("isWalking", true);
+        }
+        if (Input.GetKeyUp(KeyCode.W)) //stop walking
+        {
+            anim.SetBool("isWalking", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift)) //sprint
+        {
+            anim.Play("walther run");
+            anim.SetBool("isRunning", true);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift)) //stop sprinting
+        {
+            anim.SetBool("isRunning", false);
+        }
     }
 
     void Shoot()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            anim.Play("walther shoot");
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hitInfo;
 
@@ -52,6 +77,7 @@ public class WaltherPPK : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             Debug.Log("Reload");
+            anim.Play("walther reload");
         }
     }
 }
