@@ -17,6 +17,8 @@ public class WaltherPPK : MonoBehaviour
     void Update()
     {
         Shoot();
+        Aim();
+        Reload();
     }
 
     void Shoot()
@@ -31,6 +33,25 @@ public class WaltherPPK : MonoBehaviour
                 Debug.Log("Hit: " + hitInfo.transform.name);
             }
         }
-        
+    }
+
+    void Aim()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("Aim");
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            Debug.Log("Return to normal position");
+        }
+    }
+
+    void Reload()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log("Reload");
+        }
     }
 }
