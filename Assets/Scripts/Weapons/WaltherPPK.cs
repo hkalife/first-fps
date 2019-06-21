@@ -6,6 +6,7 @@ public class WaltherPPK : MonoBehaviour
 {
 
     private Animator anim;
+    private bool isAiming;
 
     // Start is called before the first frame update
     void Start()
@@ -47,7 +48,7 @@ public class WaltherPPK : MonoBehaviour
 
     void Shoot()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && (isAiming == false))
         {
             anim.Play("walther shoot");
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -64,11 +65,21 @@ public class WaltherPPK : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
+            isAiming = true;
             Debug.Log("Aim");
+            anim.Play("walther aim");
         }
         if (Input.GetMouseButtonUp(1))
         {
+            isAiming = false;
             Debug.Log("Return to normal position");
+            anim.SetBool("isShootingAim", false);
+            anim.Play("walther aim return");
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            anim.Play("walther aim shoot");
+            anim.SetBool("isShootingAim", true);
         }
     }
 
