@@ -7,6 +7,7 @@ public class WaltherPPK : MonoBehaviour
 
     private Animator anim;
     private bool isAiming;
+    private bool isReloading = false;
 
     // Start is called before the first frame update
     void Start()
@@ -19,7 +20,7 @@ public class WaltherPPK : MonoBehaviour
     {
         Shoot();
         Aim();
-        Reload();
+        StartCoroutine(Reload());
         Move();
     }
 
@@ -48,7 +49,7 @@ public class WaltherPPK : MonoBehaviour
 
     void Shoot()
     {
-        if (Input.GetMouseButtonDown(0) && (isAiming == false))
+        if (Input.GetMouseButtonDown(0) && (isAiming == false) && (isReloading == false))
         {
             anim.Play("walther shoot");
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -63,7 +64,7 @@ public class WaltherPPK : MonoBehaviour
 
     void Aim()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && (isReloading == false))
         {
             isAiming = true;
             Debug.Log("Aim");
@@ -75,20 +76,41 @@ public class WaltherPPK : MonoBehaviour
             Debug.Log("Return to normal position");
             anim.SetBool("isShootingAim", false);
             anim.Play("walther aim return");
+            anim.SetBool("aimGun", false);
         }
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && (isAiming == true) && (isReloading == false))
         {
             anim.Play("walther aim shoot");
             anim.SetBool("isShootingAim", true);
         }
+        if (Input.GetMouseButtonUp(0) && (isAiming == false))
+        {
+            anim.SetBool("isShootingAim", false);
+        }
     }
-
+    /*
     void Reload()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Debug.Log("Reload");
+            isReloading = true; 
+            Debug.Log("Reload " + isReloading);
             anim.Play("walther reload");
+            StartCoroutine(waitForReloading());
+        }
+    }
+    */
+    IEnumerator Reload()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            isReloading = true;
+            anim.Play("walther reload");
+
+            Debug.Log("Started Reloading");
+            yield return new WaitForSeconds(1f);
+            isReloading = false;
+            Debug.Log("Finished reloading");
         }
     }
 }
