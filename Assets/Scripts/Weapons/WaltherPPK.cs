@@ -6,13 +6,14 @@ public class WaltherPPK : MonoBehaviour
 {
 
     private Animator anim;
-    private bool isAiming;
+    private bool isAiming = false;
     private bool isReloading = false;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        anim = gameObject.GetComponent<Animator>();   
+        anim = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -24,7 +25,7 @@ public class WaltherPPK : MonoBehaviour
         Move();
     }
 
-    void Move ()
+    void Move()
     {
         if (Input.GetKeyDown(KeyCode.W)) //walk
         {
@@ -64,11 +65,29 @@ public class WaltherPPK : MonoBehaviour
 
     void Aim()
     {
+        /*
+        bool processAim = false;
         if (Input.GetMouseButtonDown(1) && (isReloading == false))
+        {
+            processAim = true;
+        }
+
+        if (processAim)
         {
             isAiming = true;
             Debug.Log("Aim");
             anim.Play("walther aim");
+            anim.SetBool("aimGun", true);
+
+            if (Input.GetMouseButtonDown(0) && (isAiming == true) && (isReloading == false))
+            {
+                anim.Play("walther aim shoot");
+                anim.SetBool("isShootingAim", true);
+            }
+            if (Input.GetMouseButtonUp(0) && (isAiming == false))
+            {
+                anim.SetBool("isShootingAim", false);
+            }
         }
         if (Input.GetMouseButtonUp(1))
         {
@@ -78,28 +97,37 @@ public class WaltherPPK : MonoBehaviour
             anim.Play("walther aim return");
             anim.SetBool("aimGun", false);
         }
-        if (Input.GetMouseButtonDown(0) && (isAiming == true) && (isReloading == false))
+        */
+
+        if (Input.GetMouseButtonDown(1)) //is aiming
         {
-            anim.Play("walther aim shoot");
+            Debug.Log("Is aiming.");
+            isAiming = true;
+
+            anim.SetBool("aimGun", true);
+        }
+        if (Input.GetMouseButtonUp(1))// stopped aiming
+        {
+            Debug.Log("Stopped aiming.");
+            isAiming = false;
+
+            anim.SetBool("aimGun", false);
+        }
+
+        if ((isAiming == true) && Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Shooting with aiming.");
             anim.SetBool("isShootingAim", true);
         }
-        if (Input.GetMouseButtonUp(0) && (isAiming == false))
+        if ((isAiming == true) && Input.GetMouseButtonUp(0))
         {
+            Debug.Log("Shooting with aiming, part 2.");
             anim.SetBool("isShootingAim", false);
         }
+
+
     }
-    /*
-    void Reload()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            isReloading = true; 
-            Debug.Log("Reload " + isReloading);
-            anim.Play("walther reload");
-            StartCoroutine(waitForReloading());
-        }
-    }
-    */
+
     IEnumerator Reload()
     {
         if (Input.GetKeyDown(KeyCode.R))
