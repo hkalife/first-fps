@@ -9,11 +9,25 @@ public class WaltherPPK : MonoBehaviour
     private bool isAiming = false;
     private bool isReloading = false;
 
+    [SerializeField]
+    private GameObject muzzleFlash;
+
+    public AudioClip shootSound;
+    public AudioClip reloadSound;
+
+    [SerializeField]
+    private AudioSource weaponAudio;
+
+    public GameObject crosshair;
+
+    [SerializeField]
+    private GameObject hitMarker;
 
     // Start is called before the first frame update
     void Start()
     {
         anim = gameObject.GetComponent<Animator>();
+        weaponAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -27,7 +41,7 @@ public class WaltherPPK : MonoBehaviour
 
     void Move()
     {
-        if (Input.GetKeyDown(KeyCode.W)) //walk
+        if (Input.GetKeyDown(KeyCode.W) && (isReloading == false)) //walk
         {
             anim.Play("walther walk");
             anim.SetBool("isWalking", true);
@@ -37,7 +51,7 @@ public class WaltherPPK : MonoBehaviour
             anim.SetBool("isWalking", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift)) //sprint
+        if (Input.GetKeyDown(KeyCode.LeftShift) && (isReloading == false)) //sprint
         {
             anim.Play("walther run");
             anim.SetBool("isRunning", true);
@@ -53,22 +67,28 @@ public class WaltherPPK : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && (isAiming == false) && (isReloading == false))
         {
             anim.Play("walther shoot");
+            StartCoroutine(SetMuzzleFlash());
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hitInfo;
 
             if (Physics.Raycast(rayOrigin, out hitInfo))
             {
                 Debug.Log("Hit: " + hitInfo.transform.name);
+                Instantiate(hitMarker, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             }
+
+            weaponAudio.PlayOneShot(shootSound, 0.7f);
         }
     }
 
     void Aim()
     {
-        if (Input.GetMouseButtonDown(1)) //is aiming
+        if (Input.GetMouseButtonDown(1) && (isReloading == false)) //is aiming
         {
             Debug.Log("Is aiming.");
             isAiming = true;
+
+            crosshair.SetActive(false);
 
             anim.SetBool("aimGun", true);
         }
@@ -77,20 +97,23 @@ public class WaltherPPK : MonoBehaviour
             Debug.Log("Stopped aiming.");
             isAiming = false;
 
+            crosshair.SetActive(true);
+
             anim.SetBool("aimGun", false);
         }
 
-        if ((isAiming == true) && Input.GetMouseButtonDown(0)) //shoot while aiming
+        if ((isAiming == true) && Input.GetMouseButtonDown(0) && (isReloading == false)) //shoot while aiming
         {
             Debug.Log("Shooting with aiming.");
             anim.Play("walther aim shoot");
-
+            weaponAudio.PlayOneShot(shootSound, 0.7f);
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hitInfo;
 
             if (Physics.Raycast(rayOrigin, out hitInfo))
             {
                 Debug.Log("Hit: " + hitInfo.transform.name);
+                Instantiate(hitMarker, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             }
 
         }
@@ -105,16 +128,23 @@ public class WaltherPPK : MonoBehaviour
 
     IEnumerator Reload()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && (isReloading == false))
         {
             isReloading = true;
             anim.Play("walther reload");
-
+            weaponAudio.PlayOneShot(reloadSound, 0.7f);
             Debug.Log("Started Reloading");
             yield return new WaitForSeconds(1f);
             isReloading = false;
             Debug.Log("Finished reloading");
         }
+    }
+
+    IEnumerator SetMuzzleFlash()
+    {
+        muzzleFlash.SetActive(true);
+        yield return new WaitForSeconds(.1f);
+        muzzleFlash.SetActive(false);
     }
 
 }
