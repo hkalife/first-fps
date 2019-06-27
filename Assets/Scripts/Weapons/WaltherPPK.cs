@@ -68,7 +68,7 @@ public class WaltherPPK : MonoBehaviour
         {
             anim.Play("walther shoot");
             StartCoroutine(SetMuzzleFlash());
-            Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(Mathf.Lerp(0f, 1f, 0.50f), Mathf.Lerp(0f, 1f, 0.50f), 0));
             RaycastHit hitInfo;
 
             if (Physics.Raycast(rayOrigin, out hitInfo))
