@@ -9,13 +9,17 @@ public class AreaBox : MonoBehaviour
     [SerializeField]
     private Text areaTexto;
 
+    public float segundos = 10.0f;
+
     [SerializeField]
-    public bool colidindo = false;
+    private GameObject negativo;
+
+    private int okCoroutine;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        okCoroutine = 1;
     }
 
     // Update is called once per frame
@@ -28,9 +32,16 @@ public class AreaBox : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            Debug.Log("Player está na " + this.gameObject.name);
+            
+            //Debug.Log("Player está na " + this.gameObject.name);
             areaTexto.text = this.gameObject.name;
-            colidindo = true;
+            if (okCoroutine == 1)
+            {
+                okCoroutine = 0;
+                StartCoroutine(contaSegundos(segundos));
+                negativo.SetActive(false);
+            }
+            
         }
         
     }
@@ -39,15 +50,20 @@ public class AreaBox : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Debug.Log("Player está na " + this.gameObject.name);
+            //Debug.Log("Player está na " + this.gameObject.name);
             areaTexto.text = this.gameObject.name;
-            colidindo = true;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        colidindo = false;
+        //negativo.SetActive(false);
+    }
+
+    IEnumerator contaSegundos(float seg)
+    {
+        yield return new WaitForSeconds(seg);
+        negativo.SetActive(true);
     }
 
 }
