@@ -20,4 +20,5 @@ public class EnemyAnim : MonoBehaviour
     {
         transform.LookAt(player);
     }
+
 }
