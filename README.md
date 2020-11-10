@@ -1,2 +1,2 @@
 # first-fps
-Creation of a FPS using Unity and C#.
+Proof of concept of a FPS (First Person Shooter) game using Unity and C#.
